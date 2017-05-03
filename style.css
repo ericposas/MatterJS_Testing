@@ -1,0 +1,31 @@
+#title{
+  font-family: 'Arial';
+  font-size: 13px;
+  padding-bottom: 4px;
+  font-weight: bold;
+}
+
+#console-title{
+  width: 800px;
+  font-family: 'Arial';
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* console window */
+#window{
+  width: 800px;
+  height: 200px;
+  overflow: scroll;
+  border: 1px solid darkgray;
+}
+
+.comment{
+  margin-top: 4px;
+  margin-left: 4px;
+  font-family: 'Arial';
+  font-size: 12px;
+  /* font-weight: bold; */
+  color: darkgray
+}
+
