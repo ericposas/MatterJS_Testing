@@ -18,6 +18,12 @@
   height: 200px;
   overflow: scroll;
   border: 1px solid darkgray;
+  border-radius: 4px;
+}
+
+#stats{
+  margin-top: 27px;
+  margin-left: 8px;
 }
 
 .comment{

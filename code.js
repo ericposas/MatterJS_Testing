@@ -1,22 +1,5 @@
-// Global Matter.js World variables
-var body, Engine, Render, World, Bodies, Composite, Composites, Constraint, Mouse, MouseConstraint, Events, Runner, engine, render;
-// Mouse 
-var mouseConst;
-// Bodies are globally set 
-var boxA, boxB, ground, leftwall, rightwall;
-// keyspressed 
-var keyspressed = {
-  rightarrow : false
-};
-/* var box = {
-  isJumping : false
-} */
-
-/* TweenLite.delayedCall(3, function(){
-  alert(boxA.position.y);
-}); */
-
 window.onload = function(){
+  appendStats();
   createWorldObjects();
   init();
   startEngine([boxA, boxB, ground, leftwall, rightwall]);  //, mouseConst]);
@@ -149,8 +132,11 @@ function startEngine(arr){
   //Runner.run(runner, engine);
   gameLoop();
   function gameLoop(){
+    //ad stats to game loop
+    stats.begin();
     testKeys();
     Engine.update(engine, 500/60, 1);
+    stats.end();
     requestAnimationFrame(gameLoop);
   }
   function testKeys(){
