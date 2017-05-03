@@ -13,6 +13,18 @@ var keyspressed = {
 var touchingWall = false;
 var stats;
 
+// accelleration
+var rate = 1, maxrate = 10, accel = 0.25;
+function accelerate(){
+  if(rate < maxrate){
+    rate+=accel;
+  }else{
+    //comment('reached max rate of ' + maxrate);
+  }
+}
+function decelerate(){
+  rate = 1;
+}
 
 
 /* var box = {

@@ -4,12 +4,13 @@ window.onload = function(){
   init();
   startEngine([boxA, boxB, ground, leftwall, rightwall]);  //, mouseConst]);
   //applyForcesToSmallBox();
-  addKeys();
+  keys();
   //alert('boxA: ' + boxA.id + ', boxB: ' + boxB.id);
   
-  //create a console on the page so I don't have to 'inspect' via the browser
+  //create a console on the page so I don't have to 'inspect' via the browser for console.log statement
   createConsole();
 }
+
 
 function createWorldObjects(){
   // create two boxes and a ground
@@ -45,7 +46,6 @@ function createWorldObjects(){
       fillStyle: '#666'
     }
   });
-  // id 3
   leftwall = Matter.Bodies.rectangle(0,200,40,800, {
     id: 'leftwall',
     isStatic:true,
@@ -53,7 +53,6 @@ function createWorldObjects(){
       fillStyle: '#666'
     }
   });
-  // id 4
   rightwall = Matter.Bodies.rectangle(800,200,40,800, {
     id: 'rightwall',
     isStatic:true,
@@ -103,26 +102,23 @@ function init(){
       var pair = pairs[i];
       pair.bodyA.render.fillStyle = '#FF0000';
       pair.bodyB.render.fillStyle = '#FF0000';
-      if((pair.bodyA.id == 'smBox' && pair.bodyB.id == 'lgBox') || (pair.bodyA.id == 'lgBox' && pair.bodyB.id == 'smBox')){
-        comment("you're touching the bigger box.");
+      if(pair.bodyA.id == 'lgBox'){
+        comment("you've touched the bigger box.");
       }
       switch (pair.bodyA.id){
         case 'leftwall':
           if(pair.bodyB.id == 'smBox'){
             touchingWall = true;
-            comment("you're touching a wall.");
+            comment("you're touching the " + pair.bodyA.id + ".");
+            // rebound char/box if hitting a wall
+            Matter.Body.applyForce(boxA, boxA.position, { x:0.25, y:0 });
           }
           break;
         case 'rightwall':
           if(pair.bodyB.id == 'smBox'){
             touchingWall = true;
-            comment("you're touching a wall.");
-          }
-          break;
-        case 0:
-          if((pair.bodyB.id == 'leftwall') || (pair.bodyB.id == 'rightwall')){
-            touchingWall = true;
-            comment("you're touching a wall.");
+            comment("you're touching the " + pair.bodyA.id + ".");
+            Matter.Body.applyForce(boxA, boxA.position, { x:-0.25, y:0 });
           }
           break;
         default:
@@ -138,6 +134,21 @@ function init(){
       var pair = pairs[i];
       pair.bodyA.render.fillStyle = '#666';
       pair.bodyB.render.fillStyle = '#666';
+      // testing for end of wall collision 
+      switch (pair.bodyA.id){
+        case 'leftwall':
+          if(pair.bodyB.id == 'smBox'){
+            touchingWall = false;
+          }
+          break;
+        case 'rightwall':
+          if(pair.bodyB.id == 'smBox'){
+            touchingWall = false;
+          }
+          break;
+        default:
+          touchingWall = false;
+      }
     }
   });
   
@@ -165,23 +176,25 @@ function startEngine(arr){
     //ad stats to game loop
     stats.begin();
     testKeys();
-    testWallTouch();
-    Engine.update(engine, 500/60, 1);
+    //testWallTouch();
+    Engine.update(engine, 1000/60, 1);
     stats.end();
     requestAnimationFrame(gameLoop);
   }
   function testKeys(){
     if(keyspressed.rightarrow == true){
-      Matter.Body.translate(boxA, { x:4, y:0 });
+      accelerate();
+      Matter.Body.translate(boxA, { x:rate, y:0 });
     }
     if(keyspressed.leftarrow == true){
-      Matter.Body.translate(boxA, { x:-4, y:0 });
+      accelerate();
+      Matter.Body.translate(boxA, { x:(-1*rate), y:0 });
     }
   }
-  function testWallTouch(){
+  /* function testWallTouch(){
     if(touchingWall == true){
     }
-  }
+  } */
 }
 
 /* function applyForcesToSmallBox(){
