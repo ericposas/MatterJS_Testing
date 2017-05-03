@@ -9,7 +9,11 @@ var keyspressed = {
   rightarrow : false,
   leftarrow : false
 };
+// touching wall
+var touchingWall = false;
 var stats;
+
+
 
 /* var box = {
   isJumping : false

@@ -14,6 +14,8 @@ window.onload = function(){
 function createWorldObjects(){
   // create two boxes and a ground
   boxA = Matter.Bodies.rectangle(400,400,40,40, {
+    inertia: Infinity, //<--- set 'inertia' to 'Infinity' to prevent rotation of box(character)
+    id: 'smBox',
     render: {
       fillStyle: '#666',
       sprite: {
@@ -25,6 +27,7 @@ function createWorldObjects(){
   });
   //boxA.render.sprite.texture = "box.jpg";
   boxB = Matter.Bodies.rectangle(430,0,80,80, {
+    id: 'lgBox',
     render: {
       fillStyle: '#666',
       sprite: {
@@ -36,18 +39,23 @@ function createWorldObjects(){
   });
   Matter.Body.rotate(boxB,15);
   ground = Matter.Bodies.rectangle(400,610,810,60,{
+    id: 'ground',
     isStatic:true,
     render: {
       fillStyle: '#666'
     }
   });
+  // id 3
   leftwall = Matter.Bodies.rectangle(0,200,40,800, {
+    id: 'leftwall',
     isStatic:true,
     render: {
       fillStyle: '#666'
     }
   });
+  // id 4
   rightwall = Matter.Bodies.rectangle(800,200,40,800, {
+    id: 'rightwall',
     isStatic:true,
     render: {
       fillStyle: '#666'
@@ -95,8 +103,30 @@ function init(){
       var pair = pairs[i];
       pair.bodyA.render.fillStyle = '#FF0000';
       pair.bodyB.render.fillStyle = '#FF0000';
-      if((pair.bodyA.id == 0 && pair.bodyB.id == 1) || (pair.bodyA.id == 1 && pair.bodyB.id == 0)){
+      if((pair.bodyA.id == 'smBox' && pair.bodyB.id == 'lgBox') || (pair.bodyA.id == 'lgBox' && pair.bodyB.id == 'smBox')){
         comment("you're touching the bigger box.");
+      }
+      switch (pair.bodyA.id){
+        case 'leftwall':
+          if(pair.bodyB.id == 'smBox'){
+            touchingWall = true;
+            comment("you're touching a wall.");
+          }
+          break;
+        case 'rightwall':
+          if(pair.bodyB.id == 'smBox'){
+            touchingWall = true;
+            comment("you're touching a wall.");
+          }
+          break;
+        case 0:
+          if((pair.bodyB.id == 'leftwall') || (pair.bodyB.id == 'rightwall')){
+            touchingWall = true;
+            comment("you're touching a wall.");
+          }
+          break;
+        default:
+          touchingWall = false;
       }
     }
   });
@@ -135,24 +165,21 @@ function startEngine(arr){
     //ad stats to game loop
     stats.begin();
     testKeys();
+    testWallTouch();
     Engine.update(engine, 500/60, 1);
     stats.end();
     requestAnimationFrame(gameLoop);
   }
   function testKeys(){
     if(keyspressed.rightarrow == true){
-      if(boxA.render.fillStyle == '#666'){
-        Matter.Body.applyForce(boxA, boxA.position, { x:0.005, y:0 });
-      }else{
-        Matter.Body.applyForce(boxA, boxA.position, { x:0.01, y:0 });
-      }
+      Matter.Body.translate(boxA, { x:4, y:0 });
     }
     if(keyspressed.leftarrow == true){
-      if(boxA.render.fillStyle == '#666'){
-        Matter.Body.applyForce(boxA, boxA.position, { x:-0.005, y:0 });
-      }else{
-        Matter.Body.applyForce(boxA, boxA.position, { x:-0.01, y:0 });
-      }
+      Matter.Body.translate(boxA, { x:-4, y:0 });
+    }
+  }
+  function testWallTouch(){
+    if(touchingWall == true){
     }
   }
 }
