@@ -2,7 +2,7 @@ window.onload = function(){
   appendStats();
   createWorldObjects();
   init();
-  startEngine([boxA, boxB, ground, leftwall, rightwall]);  //, mouseConst]);
+  startEngine([boxA, boxB, ground, leftwall, rightwall, boxC]);  //, mouseConst]);
   //applyForcesToSmallBox();
   keys();
   //alert('boxA: ' + boxA.id + ', boxB: ' + boxB.id);
@@ -38,8 +38,18 @@ function createWorldObjects(){
       }
     }
   });
-  Matter.Body.rotate(boxB,15);
-  ground = Matter.Bodies.rectangle(400,610,810,60,{
+  boxC = Matter.Bodies.rectangle(630,0,100,100, {
+    id: 'lgBox2',
+    render: {
+      fillStyle: '#666',
+      sprite: {
+        xScale:1.0,
+        yScale:1.0,
+        texture: 'box.min.jpg'
+      }
+    }
+  });
+  ground = Matter.Bodies.rectangle(800,610,1620,60,{
     id: 'ground',
     isStatic:true,
     render: {
@@ -53,7 +63,7 @@ function createWorldObjects(){
       fillStyle: '#666'
     }
   });
-  rightwall = Matter.Bodies.rectangle(800,200,40,800, {
+  rightwall = Matter.Bodies.rectangle(1600,200,40,800, {
     id: 'rightwall',
     isStatic:true,
     render: {
@@ -183,19 +193,40 @@ function startEngine(arr){
   }
   function testKeys(){
     if(keyspressed.rightarrow == true){
-      accelerate();
-      Matter.Body.translate(boxA, { x:rate, y:0 });
+      moveBodiesLeft();
     }
     if(keyspressed.leftarrow == true){
-      accelerate();
-      Matter.Body.translate(boxA, { x:(-1*rate), y:0 });
+      moveBodiesRight();
     }
   }
-  /* function testWallTouch(){
-    if(touchingWall == true){
-    }
-  } */
 }
+
+function moveBodiesLeft(){
+  //if(leftwall.position.x < leftMostPosition){
+    accelerate();
+    Matter.Body.translate(leftwall, { x:(-1*rate), y:0 });
+    Matter.Body.translate(boxB, { x:(-1*rate), y:0 });
+    Matter.Body.translate(boxC, { x:(-1*rate), y:0 });
+    Matter.Body.translate(ground, { x:(-1*rate), y:0 });
+    Matter.Body.translate(rightwall, { x:(-1*rate), y:0 });
+  //}
+}
+
+function moveBodiesRight(){
+  //if(rightwall.position.x > rightMostPosition){
+    accelerate();
+    Matter.Body.translate(leftwall, { x:rate, y:0 });
+    Matter.Body.translate(boxB, { x:rate, y:0 });
+    Matter.Body.translate(boxC, { x:rate, y:0 });
+    Matter.Body.translate(ground, { x:rate, y:0 });
+    Matter.Body.translate(rightwall, { x:rate, y:0 });
+  //}
+}
+
+setInterval(function(){
+  comment('Left wall position x: ' + leftwall.position.x);
+  comment('Right wall position x: ' + rightwall.position.x);
+}, 1000);
 
 /* function applyForcesToSmallBox(){
   TweenLite.delayedCall(2.5, function(){
