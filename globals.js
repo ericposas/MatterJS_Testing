@@ -4,7 +4,6 @@ var body, Engine, Render, World, Bodies, Composite, Composites, Constraint, Mous
 var mouseConst;
 // Bodies are globally set 
 var boxA, boxB, ground, leftwall, rightwall, boxC;
-var worldObjects = [boxA, boxB, ground, leftwall, rightwall];
 
 // keyspressed 
 var keyspressed = {

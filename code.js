@@ -2,10 +2,8 @@ window.onload = function(){
   appendStats();
   createWorldObjects();
   init();
-  startEngine([boxA, boxB, ground, leftwall, rightwall, boxC]);  //, mouseConst]);
-  //applyForcesToSmallBox();
+  startEngine([boxA, ground, leftwall, rightwall, platform1, platform2, platform3]);
   keys();
-  //alert('boxA: ' + boxA.id + ', boxB: ' + boxB.id);
   
   //create a console on the page so I don't have to 'inspect' via the browser for console.log statement
   createConsole();
@@ -26,37 +24,43 @@ function createWorldObjects(){
       }
     }
   });
-  //boxA.render.sprite.texture = "box.jpg";
-  boxB = Matter.Bodies.rectangle(430,0,80,80, {
-    id: 'lgBox',
-    render: {
-      fillStyle: '#666',
-      sprite: {
-        xScale:0.8,
-        yScale:0.8,
-        texture: 'box.min.jpg'
-      }
-    }
-  });
-  boxC = Matter.Bodies.rectangle(630,0,100,100, {
-    id: 'lgBox2',
-    render: {
-      fillStyle: '#666',
-      sprite: {
-        xScale:1.0,
-        yScale:1.0,
-        texture: 'box.min.jpg'
-      }
-    }
-  });
   ground = Matter.Bodies.rectangle(800,610,1620,60,{
     id: 'ground',
-    isStatic:true,
+    isStatic: true,
     render: {
       fillStyle: '#666'
     }
   });
-  leftwall = Matter.Bodies.rectangle(0,200,40,800, {
+  platform1 = Matter.Bodies.rectangle(600, 400, 800, 40, {
+    id: 'platform1',
+    isStatic: true,
+    render: {
+      fillStyle: '#666'
+    }
+  });
+  platform2 = Matter.Bodies.rectangle(1000, 200, 120, 40, {
+    id: 'platform2',
+    isStatic: true,
+    render: {
+      fillStyle: '#666'
+    }
+  });
+  platform3 = Matter.Bodies.rectangle(500, 340, 80, 40, {
+    id: 'platform3',
+    isStatic: true,
+    render: {
+      fillStyle: '#666'
+    }
+  });
+  //move platform3 up and down 
+  /* TweenLite.delayedCall(2, function(){
+    var y_pos = platform3.position.y;
+    TweenLite.to(platform3.position, 10, { y:y_pos });
+    y_pos-=0.05;
+    Matter.Body.translate(platform3, { x:platform3.position.x, y:y_pos });
+  }); */
+  
+  leftwall = Matter.Bodies.rectangle(-20,200,40,800, {
     id: 'leftwall',
     isStatic:true,
     render: {
@@ -161,17 +165,6 @@ function init(){
       }
     }
   });
-  
-  // added a mouse constraint.. meaning, we can now interact with objects, pick them up, etc. 
-  /*mouseConst = MouseConstraint.create(engine, {
-    mouse: Mouse.create(body),
-    constraint: {
-      stiffness: 0.2,
-      render: {
-        visible: false
-      }
-    }
-  });*/
 }
 
 function startEngine(arr){
@@ -179,78 +172,56 @@ function startEngine(arr){
   World.add(engine.world, arr);
   // run engine
   Engine.run(engine);
-  // create a runner
-  //Runner.run(runner, engine);
+  
   gameLoop();
   function gameLoop(){
     //ad stats to game loop
     stats.begin();
     testKeys();
+    movePlats();
     //testWallTouch();
     Engine.update(engine, 1000/60, 1);
     stats.end();
     requestAnimationFrame(gameLoop);
   }
   function testKeys(){
+    var platforms = [platform1, platform2, platform3];
     if(keyspressed.rightarrow == true){
-      moveBodiesLeft();
+      moveBodiesLeft(platforms);
     }
     if(keyspressed.leftarrow == true){
-      moveBodiesRight();
+      moveBodiesRight(platforms);
     }
   }
 }
 
-function moveBodiesLeft(){
-  //if(leftwall.position.x < leftMostPosition){
-    accelerate();
-    Matter.Body.translate(leftwall, { x:(-1*rate), y:0 });
-    Matter.Body.translate(boxB, { x:(-1*rate), y:0 });
-    Matter.Body.translate(boxC, { x:(-1*rate), y:0 });
-    Matter.Body.translate(ground, { x:(-1*rate), y:0 });
-    Matter.Body.translate(rightwall, { x:(-1*rate), y:0 });
-  //}
+function movePlats(){
+  if(platform3.position.y < 100){
+    moveUp = true;
+  }else{
+    moveUp = false;
+  }
 }
 
-function moveBodiesRight(){
-  //if(rightwall.position.x > rightMostPosition){
-    accelerate();
-    Matter.Body.translate(leftwall, { x:rate, y:0 });
-    Matter.Body.translate(boxB, { x:rate, y:0 });
-    Matter.Body.translate(boxC, { x:rate, y:0 });
-    Matter.Body.translate(ground, { x:rate, y:0 });
-    Matter.Body.translate(rightwall, { x:rate, y:0 });
-  //}
+function moveUp(){
+  Matter.Body.translate(platform3, { x:0, y:-0.5 });
 }
 
-setInterval(function(){
-  comment('Left wall position x: ' + leftwall.position.x);
-  comment('Right wall position x: ' + rightwall.position.x);
-}, 1000);
+function moveDown(){
+  Matter.Body.translate(platform3, { x:0, y:0.5 });
+}
 
-/* function applyForcesToSmallBox(){
-  TweenLite.delayedCall(2.5, function(){
-    //alert(boxA.position.x + ', ' + boxA.position.y);
-    Matter.Body.applyForce(boxA, boxA.position, { x:0.15, y:0.05 });
-  });
-  
-  TweenLite.delayedCall(3, function(){
-    //alert(boxA.position.x + ', ' + boxA.position.y);
-    Matter.Body.rotate(boxA,60);
-    Matter.Body.applyForce(boxA, boxA.position, { x:0.1, y:-0.1 });
-  });
-  
-  TweenLite.delayedCall(3.5, function(){
-    Matter.Body.applyForce(boxA, boxA.position, { x:0, y:0.15 });
-  });
-  
-  TweenLite.delayedCall(5, function(){
-    
-  });
-} */
+function moveBodiesLeft(bodies){
+  accelerate();
+  for(var i = 0; i < bodies.length; i++){
+    Matter.Body.translate(bodies[i], { x:(-1*rate), y:0 });
+  }
+}
 
-/* function moveSmBox(){
-  Matter.Body.applyForce(boxA, boxA.position, { x:0.01, y:0.1 });
-} */
-
+function moveBodiesRight(bodies){
+  accelerate();
+  for(var i = 0; i < bodies.length; i++){
+    Matter.Body.translate(bodies[i], { x:rate, y:0 });
+  }
+}
 
