@@ -18,9 +18,9 @@ function createWorldObjects(){
     render: {
       fillStyle: '#666',
       sprite: {
-        xScale:0.4,
-        yScale:0.4,
-        texture: 'box.min.jpg'
+        xScale:0.2,
+        yScale:0.2,
+        texture: 'box.min.hd.jpg'
       }
     }
   });
@@ -52,13 +52,6 @@ function createWorldObjects(){
       fillStyle: '#666'
     }
   });
-  //move platform3 up and down 
-  /* TweenLite.delayedCall(2, function(){
-    var y_pos = platform3.position.y;
-    TweenLite.to(platform3.position, 10, { y:y_pos });
-    y_pos-=0.05;
-    Matter.Body.translate(platform3, { x:platform3.position.x, y:y_pos });
-  }); */
   
   leftwall = Matter.Bodies.rectangle(-20,200,40,800, {
     id: 'leftwall',
@@ -108,64 +101,8 @@ function init(){
       }
     }
   );
-  
-  Events.on(engine, 'collisionStart', function(e){
-    var pairs = e.pairs;
-    // change obj col to show those starting a collision
-    for(var i = 0; i < pairs.length; i++){
-      var pair = pairs[i];
-      pair.bodyA.render.fillStyle = '#FF0000';
-      pair.bodyB.render.fillStyle = '#FF0000';
-      if(pair.bodyA.id == 'lgBox'){
-        comment("you've touched the bigger box.");
-      }
-      switch (pair.bodyA.id){
-        case 'leftwall':
-          if(pair.bodyB.id == 'smBox'){
-            touchingWall = true;
-            comment("you're touching the " + pair.bodyA.id + ".");
-            // rebound char/box if hitting a wall
-            Matter.Body.applyForce(boxA, boxA.position, { x:0.25, y:0 });
-          }
-          break;
-        case 'rightwall':
-          if(pair.bodyB.id == 'smBox'){
-            touchingWall = true;
-            comment("you're touching the " + pair.bodyA.id + ".");
-            Matter.Body.applyForce(boxA, boxA.position, { x:-0.25, y:0 });
-          }
-          break;
-        default:
-          touchingWall = false;
-      }
-    }
-  });
-  
-  Events.on(engine, 'collisionEnd', function(e){
-    var pairs = e.pairs;
-    // change obj col to show those starting a collision
-    for(var i = 0; i < pairs.length; i++){
-      var pair = pairs[i];
-      pair.bodyA.render.fillStyle = '#666';
-      pair.bodyB.render.fillStyle = '#666';
-      // testing for end of wall collision 
-      switch (pair.bodyA.id){
-        case 'leftwall':
-          if(pair.bodyB.id == 'smBox'){
-            touchingWall = false;
-          }
-          break;
-        case 'rightwall':
-          if(pair.bodyB.id == 'smBox'){
-            touchingWall = false;
-          }
-          break;
-        default:
-          touchingWall = false;
-      }
-    }
-  });
 }
+
 
 function startEngine(arr){
   // add all of the bodies to the world

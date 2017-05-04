@@ -4,11 +4,9 @@ var spacebar = 32, leftarrow = 37, rightarrow = 39, uparrow = 38, downarrow = 40
 function keys(){
   document.body.addEventListener('keypress', function(e){
     //comment("spacebar pressed.");
-    if(e.keyCode == spacebar && ((boxA.position.y > 552) || (boxA.render.fillStyle == '#FF0000'))){ //fillStyle '#FF0000' indicates touching a surface 
-      if(touchingWall == false){
-        // jump
-        Matter.Body.applyForce(boxA, boxA.position, { x:0, y:-0.075 });
-      }
+    if(e.keyCode == spacebar){ //fillStyle '#FF0000' indicates touching a surface 
+      // jump
+      Matter.Body.applyForce(boxA, boxA.position, { x:0, y:-0.075 });
     }
   });
   // ARROW KEYS
