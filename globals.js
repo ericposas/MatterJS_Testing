@@ -30,6 +30,9 @@ function decelerate(){
 var leftMostPosition = 200, rightMostPosition = 600;
 
 
+// platforms
+var moveupwards = false;
+
 /* var box = {
   isJumping : false
 } */

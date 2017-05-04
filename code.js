@@ -45,7 +45,7 @@ function createWorldObjects(){
       fillStyle: '#666'
     }
   });
-  platform3 = Matter.Bodies.rectangle(500, 340, 80, 40, {
+  platform3 = Matter.Bodies.rectangle(500, 260, 80, 40, {
     id: 'platform3',
     isStatic: true,
     render: {
@@ -178,7 +178,7 @@ function startEngine(arr){
     //ad stats to game loop
     stats.begin();
     testKeys();
-    movePlats();
+    movePlatform();
     //testWallTouch();
     Engine.update(engine, 1000/60, 1);
     stats.end();
@@ -195,20 +195,22 @@ function startEngine(arr){
   }
 }
 
-function movePlats(){
-  if(platform3.position.y < 100){
-    moveUp = true;
+setInterval(switchPlatformDirection, 3000);
+
+function switchPlatformDirection(){
+  if(moveupwards == true){
+    moveupwards = false;
   }else{
-    moveUp = false;
+    moveupwards = true;
   }
 }
 
-function moveUp(){
-  Matter.Body.translate(platform3, { x:0, y:-0.5 });
-}
-
-function moveDown(){
-  Matter.Body.translate(platform3, { x:0, y:0.5 });
+function movePlatform(){
+  if(moveupwards == false){
+    Matter.Body.translate(platform3, { x:0, y:0.5 }); 
+  }else{
+    Matter.Body.translate(platform3, { x:0, y:-0.5 });
+  }
 }
 
 function moveBodiesLeft(bodies){
